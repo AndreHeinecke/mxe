@@ -98,25 +98,41 @@
 
     <table id="supported-toolchains">
     <tr>
-        <th>Runtime</th>
-        <th>Host Triplet</th>
-        <th>Packages</th>
+        <th rowspan="2">Runtime</th>
+        <th rowspan="2">Host Triplet</th>
+        <th colspan="2">Packages</th>
     </tr>
     <tr>
-        <td><a href="http://www.mingw.org/">MinGW 3x</a></td>
+        <th>Static</th>
+        <th>Shared*</th>
+    </tr>
+    <tr>
+        <td><a href="http://www.mingw.org/">MinGW 3.x</a></td>
         <td>i686-pc-mingw32</td>
-        <td style='text-align:center'>301</td>
+        <td style='text-align:center'>97% (314/323)</td>
+        <td style='text-align:center'>50% (162/323)</td>
     </tr>
     <tr>
         <td rowspan="2"><a href="http://mingw-w64.sourceforge.net/">MinGW-w64</a></td>
         <td>i686-w64-mingw32</td>
-        <td style='text-align:center'>288</td>
+        <td style='text-align:center'>95% (308/323)</td>
+        <td style='text-align:center'>52% (167/323)</td>
     </tr>
     <tr>
         <td>x86_64-w64-mingw32</td>
-        <td style='text-align:center'>266</td>
+        <td style='text-align:center'>89% (286/323)</td>
+        <td style='text-align:center'>51% (165/323)</td>
     </tr>
     </table>
+    <p>
+        These numbers are last updated on May 4, 2014. You can see the current
+        status by executing <code>make build-matrix.html</code> in the MXE
+        directory.
+    </p>
+    <p><small>
+        * Shared support in MXE was just added in early February, 2014. These
+        numbers are expected to rise significantly.
+    </small></p>
 
 </div>
 
@@ -544,7 +560,12 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     <p>
     MXE requires a recent Unix system where
     all components as stated in the table below
-    are installed.
+    are installed. It also needs roughly 4 GB of
+    RAM to link gcc and at least 700 MB of disk
+    space per target (counted with only gcc
+    built).
+    </p>
+    <p>
     Detailed instructions are available for:
     </p>
 
@@ -604,6 +625,10 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td></td>
     </tr>
     <tr>
+        <td><a href="https://www.gnu.org/software/gperf/">GNU gperf</a></td>
+        <td></td>
+    </tr>
+    <tr>
         <td><a href="https://www.gnu.org/software/make/">GNU Make</a></td>
         <td>≥ 3.81</td>
     </tr>
@@ -648,6 +673,14 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td>≥ 0.16</td>
     </tr>
     <tr>
+        <td><a href="https://www.python.org/">Python</a></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><a href="https://www.ruby-lang.org/">Ruby</a></td>
+        <td></td>
+    </tr>
+    <tr>
         <td><a href="http://www.scons.org/">SCons</a></td>
         <td>≥ 0.98</td>
     </tr>
@@ -670,9 +703,9 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     <!-- http://www.debian.org/distrib/packages#search_packages -->
     <pre>apt-get install \
     autoconf automake bash bison bzip2 cmake flex gettext \
-    git g++ intltool libffi-dev libtool libltdl-dev \
+    git g++ gperf intltool libffi-dev libtool libltdl-dev \
     libssl-dev libxml-parser-perl make openssl patch perl \
-    pkg-config scons sed unzip wget xz-utils</pre>
+    pkg-config python ruby scons sed unzip wget xz-utils</pre>
 
     <p>
     On 64-bit Debian, install also:
@@ -688,8 +721,9 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     <!-- https://admin.fedoraproject.org/pkgdb/ -->
     <pre>yum install \
     autoconf automake bash bison bzip2 cmake flex gcc-c++ \
-    gettext git intltool make sed libffi-devel libtool \
-    openssl-devel patch perl pkgconfig scons unzip wget xz</pre>
+    gettext git gperf intltool make sed libffi-devel \
+    libtool openssl-devel patch perl pkgconfig python \
+    ruby scons unzip wget xz</pre>
 
     <p>
     On 64-bit Fedora,
@@ -701,9 +735,9 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     <!-- http://www.freshports.org/ -->
     <pre>pkg_add -r \
     automake autoconf bash bison cmake coreutils flex \
-    gettext git glib20 gmake gsed intltool libffi \
+    gettext git glib20 gmake gperf gsed intltool libffi \
     libtool openssl patch perl p5-XML-Parser pkgconf \
-    scons unzip wget</pre>
+    python ruby scons unzip wget</pre>
 
     <p>
     Ensure that /usr/local/bin precedes /usr/bin in your $PATH:
@@ -739,9 +773,9 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     <!-- http://www.frugalware.org/packages -->
     <pre>pacman-g2 -S \
     autoconf automake bash bzip2 bison cmake flex gcc \
-    gettext git intltool make sed libffi libtool openssl \
-    patch perl perl-xml-parser pkgconfig scons unzip wget \
-    xz xz-lzma</pre>
+    gettext git gperf intltool make sed libffi libtool \
+    openssl patch perl perl-xml-parser pkgconfig python \
+    ruby scons unzip wget xz xz-lzma</pre>
 
     <p>
     On 64-bit Frugalware,
@@ -755,12 +789,12 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     sys-devel/autoconf sys-devel/automake app-shells/bash \
     sys-devel/bison app-arch/bzip2 dev-util/cmake \
     sys-devel/flex sys-devel/gcc sys-devel/gettext \
-    dev-vcs/git dev-util/intltool sys-devel/make \
-    sys-apps/sed dev-libs/libffi sys-devel/libtool \
-    dev-libs/openssl sys-devel/patch dev-lang/perl \
-    dev-perl/XML-Parser dev-util/pkgconfig \
-    dev-util/scons app-arch/unzip net-misc/wget \
-    app-arch/xz-utils</pre>
+    dev-vcs/git dev-util/gperf dev-util/intltool \
+    sys-devel/make sys-apps/sed dev-libs/libffi \
+    sys-devel/libtool dev-libs/openssl sys-devel/patch \
+    dev-lang/perl dev-perl/XML-Parser dev-util/pkgconfig \
+    dev-lang/python dev-lang/ruby dev-util/scons \
+    app-arch/unzip net-misc/wget app-arch/xz-utils</pre>
 
     <h3 id="requirements-macos">Mac OS X</h3>
 
@@ -788,12 +822,12 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <h3 id="requirements-opensuse">openSUSE</h3>
 
-    <!-- http://software.opensuse.org/113/en -->
+    <!-- http://software.opensuse.org/131/en -->
     <pre>zypper install -R \
     autoconf automake bash bison bzip2 cmake flex gcc-c++ \
-    gettext-tools git intltool libffi-devel libtool make \
-    openssl libopenssl-devel patch perl perl-XML-Parser \
-    pkg-config scons sed unzip wget xz</pre>
+    gettext-tools git gperf intltool libffi-devel libtool \
+    make openssl libopenssl-devel patch perl perl-XML-Parser \
+    pkg-config python ruby scons sed unzip wget xz</pre>
 
     <p>
     On 64-bit openSUSE, install also:
@@ -946,6 +980,13 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         &ndash; use with caution!
         </dd>
 
+    <dt>make clean-junk</dt>
+
+        <dd>
+        remove all unused files, including unused package
+        files, temporary folders, and logs
+        </dd>
+
     <dt>make clean-pkg</dt>
 
         <dd>
@@ -972,6 +1013,13 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         <dd>
         print a list of upstream dependencies
         suitable for usage in shell scripts
+        </dd>
+
+    <dt>make build-matrix.html</dt>
+
+        <dd>
+        generate a report of what packages are
+        supported on what targets to build-matrix.html
         </dd>
 
     <dt>make update</dt>
@@ -1190,6 +1238,10 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         <td class="website"><a href="http://www.audiocoding.com/">faad2</a></td>
     </tr>
     <tr>
+        <td class="package">fdk-aac</td>
+        <td class="website"><a href="https://github.com/mstorsjo/fdk-aac">FDK-AAC</a></td>
+    </tr>
+    <tr>
         <td class="package">ffmpeg</td>
         <td class="website"><a href="http://www.ffmpeg.org/">ffmpeg</a></td>
     </tr>
@@ -1330,6 +1382,10 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         <td class="website"><a href="https://www.gnu.org/software/gnutls/">GnuTLS</a></td>
     </tr>
     <tr>
+        <td class="package">gperf</td>
+        <td class="website"><a href="https://www.gnu.org/software/gperf/">GNU gperf</a></td>
+    </tr>
+    <tr>
         <td class="package">graphicsmagick</td>
         <td class="website"><a href="http://www.graphicsmagick.org/">GraphicsMagick</a></td>
     </tr>
@@ -1463,7 +1519,7 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
     </tr>
     <tr>
         <td class="package">lensfun</td>
-        <td class="website"><a href="http://lensfun.berlios.de/">lensfun</a></td>
+        <td class="website"><a href="http://lensfun.sourceforge.net/">lensfun</a></td>
     </tr>
     <tr>
         <td class="package">levmar</td>
@@ -1496,6 +1552,10 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
     <tr>
         <td class="package">libdnet</td>
         <td class="website"><a href="http://libdnet.sourceforge.net/">libdnet</a></td>
+    </tr>
+    <tr>
+        <td class="package">libdvbpsi</td>
+        <td class="website"><a href="http://www.videolan.org/developers/libdvbpsi.html">libdvbpsi</a></td>
     </tr>
     <tr>
         <td class="package">libdvdcss</td>
@@ -2718,7 +2778,7 @@ endef</pre>
     <li>Mark Brand</li>
     <li>Tony Theodore</li>
     <li>Martin Gerhardy</li>
-    <li>Timothy Gu</li>
+    <li>Tiancheng "Timothy" Gu</li>
     <li><a href="https://www.ohloh.net/p/mxe/contributors">... and many other contributors</a></li>
     </ul>
 
@@ -2914,6 +2974,9 @@ endef</pre>
     <a href="http://www.gnu.org/licenses/license-list.html#OpenSSL">FSF</a>
     and the
     <a href="http://www.openssl.org/support/faq.html#LEGAL2">OpenSSL project</a>.
+    </p>
+    <p>
+    A similar situation also exists for package fdk-aac.
     </p>
 </div>
 
